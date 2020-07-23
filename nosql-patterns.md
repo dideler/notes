@@ -11,11 +11,11 @@ db: wide column key-value store
     - cpu is now more expensive than storage
     - nosql optimised for cpu, more cost effective
     
-![[dynamodb-talk-2.png]]
+![](media/dynamodb-talk-2.png)
 - early adoption faces issues due to not understanding how to use
 	- relational design patterns, multi tables, normalised data models, etc do not work well with nosql
 
-![[dynamodb-talk-3.png]]
+![](media/dynamodb-talk-3.png)
 - nosql tradeoffs solve different problems
 - nosql better at scaling horizontally than sql
 - nosql built for OLTP at scale, bad for OLAP
@@ -27,7 +27,7 @@ db: wide column key-value store
 
 ### overview of dynamodb
 
-![[dynamodb-talk-4.png]]
+![](media/dynamodb-talk-4.png)
 - dynamodb is a fully managed nosql soln at scale (50+ nodes)
 - document or key-value data
 - works well with event-driven programming (incl serverless)
@@ -37,7 +37,7 @@ db: wide column key-value store
 
 ### nosql data modeling
 
-![[dynamodb-talk-5.png]]
+![](media/dynamodb-talk-5.png)
 
 - nosql table is more like a catalog, with many items in a table
 - items in table don't have to have same attributes
@@ -55,22 +55,22 @@ db: wide column key-value store
         - query: pkey=<customer_id>, skey > 24h ago
     - model the table to support primary access paterns
 
-![[dynamodb-talk-6.png]]
+![](media/dynamodb-talk-6.png)
 - in addition to uniquely representing an item, partition keys are also used to distribute the items across a key space
 - pk used for building an unordered hash index
 - all nosql dbs work this way
 
-![[dynamodb-talk-7.png]]
+![](media/dynamodb-talk-7.png)
 - when db is scaled, we chop up key space and distribute across multiple nodes (physical devices)
 - that's why pk has to be provided in query, so system knows where to fetch the data from (which storage node)
 - this makes all nosql dbs fast and consistent at any scale
 - automatic routing to exact storage node where data lives
 
-![[dynamodb-talk-8.png]]
+![](media/dynamodb-talk-8.png)
 - when we include sort (aka range) key, system goes into pk partition, collectively fetches items that are sorted on that node
 - that's how nosql dbs maintain fast consistent behaviour
 
-![[dynamodb-talk-9.png]]
+![](media/dynamodb-talk-9.png)
 - partitions are replicated (in dynamo, and many others, it's 3-way)
 - when you write, you get an ack when majority has received write
 - when you read, have a choice between
@@ -80,8 +80,8 @@ db: wide column key-value store
 - whereas a "strongly consistent read" always uses the primary node (depends on data being on all replicas?) 
     - primary node always accepts the write
 
-![[dynamodb-talk-10.png]]
-![[dynamodb-talk-11.png]]
+![](media/dynamodb-talk-10.png)
+![](media/dynamodb-talk-11.png)
 - two types of indexes
     - local secondary index (LSI)
     - global secondary index (GSI)
@@ -99,12 +99,12 @@ db: wide column key-value store
 - using indexes, we can regroup and resort the data
     - to support secondary access patterns
 
-![[dynamodb-talk-12.png]]
+![](media/dynamodb-talk-12.png)
 
 ### common nosql design patterns
 
-![[dynamodb-talk-13.png]]
-![[dynamodb-talk-14.png]]
+![](media/dynamodb-talk-13.png)
+![](media/dynamodb-talk-14.png)
 - can look at cloudwatch...
     - you're throttling and way below provisioned capacity
     - probably means you have a "hot key"
@@ -118,7 +118,7 @@ db: wide column key-value store
 - in the second (blue) picture, you may have to deprovision the table because it's not doing much - under utilised
 - we want heat charts to look like pepperoni pizzas
 
-![[dynamodb-talk-15.png]]
+![](media/dynamodb-talk-15.png)
 - big advantage of dynamo is its elasticity
 - another db (e.g. mongo or cassandra) has to provisioned to handle peak load, which doesn't go away when it's not needed
 - dynamodb autoscaling deals with the demand of your system
@@ -126,7 +126,7 @@ db: wide column key-value store
 
 ### modeling real applications w/ nosql
 
-![[dynamodb-talk-16.png]]
+![](media/dynamodb-talk-16.png)
 - designed to maximise efficiency of your access patterns
 - not designed for data modeling
 - hard because data is relational
@@ -134,17 +134,17 @@ db: wide column key-value store
 - sql db data lives in multiple places (as it's normalised), so when it needs to be updated, we need ACID transactions
     - the need for ACID is because of how we model our data with relational dbs
 
-![[dynamodb-talk-17.png]]
+![](media/dynamodb-talk-17.png)
 - what if we store our data denormalised
 - access patterns / queries are simplified (one query vs three)
 
-![[dynamodb-talk-18.png]]
+![](media/dynamodb-talk-18.png)
 - important for nosql is choosing good partition and sort keys
 - for sort key we want to query across entities
     - with a single trip to the db, get all the items we need
     - focus on having a simple and efficient access pattern
 
-![[dynamodb-talk-19.png]]
+![](media/dynamodb-talk-19.png)
 - with nosql, understand every access pattern *beforehand*
     - if you don't, then you can't model the data efficiently
 - what's the use case / nature of your application?
@@ -164,7 +164,7 @@ db: wide column key-value store
     - overload items into partitions
     - define indexes (sort keys) for secondary access patterns
 
-![[dynamodb-talk-20.png]]
+![](media/dynamodb-talk-20.png)
 - complex queries
 - dynamo has streams
     - with a lambda, can be thought of as stored procedures
@@ -180,7 +180,7 @@ db: wide column key-value store
         1. invocation => what it can read (e.g. from the stream)
         2. execution => what it can do (e.g. access to other services)
 
-![[dynamodb-talk-23.png]]
+![](media/dynamodb-talk-23.png)
 - pattern: triggers for computed aggregations
 - one of the most common use cases for streams + lambdas
 - e.g. averages, counts, sums, ...
@@ -190,8 +190,8 @@ db: wide column key-value store
 - for high velocity workflows, lambda may not be good enough
     - could instead have a static stream reader on an EC2 instance
 
-![[dynamodb-talk-24.png]]
-![[dynamodb-talk-25.png]]
+![](media/dynamodb-talk-24.png)
+![](media/dynamodb-talk-25.png)
 - we want to store hierarchical data in our table - but how?
 - composite keys
 - sort condition applies before read
@@ -200,21 +200,21 @@ db: wide column key-value store
     - has the same read cost as whatever the sort key dictates
 - approach 1 is inefficient if you're filtering out 99% of data and reading thousands of records/documents
 
-![[dynamodb-talk-26.png]]
-![[dynamodb-talk-27.png]]
-![[dynamodb-talk-28.png]]
+![](media/dynamodb-talk-26.png)
+![](media/dynamodb-talk-27.png)
+![](media/dynamodb-talk-28.png)
 - with a composite key we can avoid those wasted reads
 - use ckeys to create hierarchies on top of the sort key structure
 - like a faceted search
 
-![[dynamodb-talk-29.png]]
+![](media/dynamodb-talk-29.png)
 - OLTP apps use data in a certain way
 - primary driver for ACID in nosql dbs
 - might still need transactions to
     - maintain version history (audit trail)
     - create multiple items in one pass
 
-![[dynamodb-talk-30.png]]
+![](media/dynamodb-talk-30.png)
 - resolver service for configuration items at amazon
 	- 1. create resolver groups
 	- 2. associate config items to groups
@@ -222,34 +222,34 @@ db: wide column key-value store
 - data model has many-to-many relationships
 - want to add all config items to resolver group, or none at all
 
-![[dynamodb-talk-31.png]]
+![](media/dynamodb-talk-31.png)
 - dynamodb supports transactions
 - good for committing changes across items
 - good for conditional batch inserts/updates
 - bad for maintaining normalized data models
 
-![[dynamodb-talk-34.png]]
+![](media/dynamodb-talk-34.png)
 - example use case for transact api:
     - cancel configuration across all resolver groups as long as none of them are in progress
     - update contact across resolver groups
 
-![[dynamodb-talk-35.png]]
+![](media/dynamodb-talk-35.png)
 - reverse lookup to maintain many-many relationship
 
-![[dynamodb-talk-36.png]]
+![](media/dynamodb-talk-36.png)
 - internal amazon service to get office information
 - data has a linear hierarchy
 - access patterns: give me everything in country/state/city/office
 - composite sort key defines a hierarchy inside one single table
 - don't need expensive joins to access the data
 
-![[dynamodb-talk-37.png]]
-![[dynamodb-talk-38.png]]
-![[dynamodb-talk-39.png]]
-![[dynamodb-talk-40.png]]
-![[dynamodb-talk-41.png]]
-![[dynamodb-talk-42.png]]
-![[dynamodb-talk-43.png]]
+![](media/dynamodb-talk-37.png)
+![](media/dynamodb-talk-38.png)
+![](media/dynamodb-talk-39.png)
+![](media/dynamodb-talk-40.png)
+![](media/dynamodb-talk-41.png)
+![](media/dynamodb-talk-42.png)
+![](media/dynamodb-talk-43.png)
 - fictional service: GetMeThat
 - complicated entity model
 - has many access patterns (10-12)
@@ -266,11 +266,11 @@ db: wide column key-value store
         - customers, orders, drivers
 - we support 12 access patterns with just one table and two GSIs
 
-![[dynamodb-talk-44.png]]
-![[dynamodb-talk-45.png]]
-![[dynamodb-talk-46.png]]
-![[dynamodb-talk-47.png]]
-![[dynamodb-talk-48.png]]
+![](media/dynamodb-talk-44.png)
+![](media/dynamodb-talk-45.png)
+![](media/dynamodb-talk-46.png)
+![](media/dynamodb-talk-47.png)
+![](media/dynamodb-talk-48.png)
 - real world example: audible sync service
 - lots of downstream and upstream consumers
 - 20 access patterns
@@ -286,11 +286,10 @@ db: wide column key-value store
         - because we have many access patterns
     - single tables exist for up to 40 access patterns
 
-![[dynamodb-talk-49.png]]
-- cheap data center infrastructure
-- (but very complex and locked in)
+![](media/dynamodb-talk-49.png)
+- cheap data center infrastructure due to autoscaling and pay per usage
 - shown application deploys for pennies a month
 - can autoscale to millions of users if needed
 - fail cheaply
 
-![[dynamodb-talk-50.png]]
+![](media/dynamodb-talk-50.png)
