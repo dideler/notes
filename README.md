@@ -1,2 +1,3 @@
 # notes
-public subset of my personal notes, for sharing
+
+unorganised public subset of my personal notes, for quick and dirty sharing
